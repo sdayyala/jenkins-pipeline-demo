@@ -1,2 +1,2 @@
-Samsung":wq
+Samsung
 
