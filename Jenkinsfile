@@ -2,9 +2,16 @@ node {
     def mvnHome = tool 'maven3'
     
     try {
+        // stage('Checkout') {
+        //     checkout scm
+        // }
+
         stage('Checkout') {
-            checkout scm
+            git branch: 'main',
+                credentialsId: 'gitcreds',
+                url: 'https://github.com/sdayyala/jenkins-pipeline-demo.git'
         }
+
 
         stage('Build & Test') {
             sh "${mvnHome}/bin/mvn clean install"
