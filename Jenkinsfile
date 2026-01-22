@@ -1,4 +1,4 @@
-node('linux') {
+node('rhel') {
 
     def mvnHome = tool 'maven3'
 
