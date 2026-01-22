@@ -1,45 +1,30 @@
-pipeline {
-    agent any
+node('linux') {
 
-    tools {
-        // Ensure 'maven-3.9.0' matches the name in Manage Jenkins -> Global Tool Configuration
-        maven 'maven3'
+    def mvnHome = tool 'maven3'
+
+    stage('Checkout') {
+        echo 'Checking out source code'
+        git branch: 'main',
+            credentialsId: 'gitcreds',
+            url: 'https://github.com/sdayyala/jenkins-pipeline-dec-scripted.git'
     }
 
-    stages {
-        stage('Git-Checkout') {
-            steps {
-                git branch: 'main', 
-                    credentialsId: 'gitcreds',
-                    url: 'https://github.com/sdayyala/jenkins-pipeline-demo.git'
-            }
-        }
-
-        stage('Maven-Build') {
-            steps {
-                sh 'mvn clean compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'mvn package'
-            }
-        }
+    stage('Build') {
+        echo 'Running Maven build'
+        sh "${mvnHome}/bin/mvn clean compile"
     }
 
-    post {
-        always {
-            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
+    stage('Test') {
+        echo 'Running Maven tests'
+        sh "${mvnHome}/bin/mvn test"
+    }
+
+    stage('Package') {
+        echo 'Packaging artifact'
+        sh "${mvnHome}/bin/mvn package"
+    }
+
+    stage('Archive') {
+        archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
     }
 }
