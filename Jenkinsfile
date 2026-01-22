@@ -1,28 +1,45 @@
-node {
-    def mvnHome = tool 'maven3'
-    
-    try {
-        // stage('Checkout') {
-        //     checkout scm
-        // }
+pipeline {
+    agent any
 
-        stage('Checkout') {
-            git branch: 'main',
-                credentialsId: 'gitcreds',
-                url: 'https://github.com/sdayyala/jenkins-pipeline-demo.git'
+    tools {
+        // Ensure 'maven-3.9.0' matches the name in Manage Jenkins -> Global Tool Configuration
+        maven 'maven3'
+    }
+
+    stages {
+        stage('Git-Checkout') {
+            steps {
+                git branch: 'main', 
+                    credentialsId: 'gitcreds',
+                    url: 'https://github.com/sdayyala/jenkins-pipeline-demo.git'
+            }
         }
 
-
-        stage('Build & Test') {
-            sh "${mvnHome}/bin/mvn clean install"
+        stage('Maven-Build') {
+            steps {
+                sh 'mvn clean compile'
+            }
         }
 
-        stage('Archive') {
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package'
+            }
         }
     }
-    catch (exc) {
-        echo "Pipeline failed: ${exc}"
-        throw exc
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
     }
 }

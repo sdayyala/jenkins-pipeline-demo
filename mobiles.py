@@ -2,4 +2,4 @@ Samsung
 Apple
 POCO
 Moto
-Redmii
+Redmi
