@@ -8,7 +8,7 @@ node('rhel') {
         stage('Checkout') {
             git branch: 'main',
                 credentialsId: 'gitcreds',
-                url: 'https://github.com/sdayyala/jenkins-pipeline-dec-scripted.git'
+                url: 'https://github.com/sdayyala/jenkins-pipeline-demo.git'
         }
 
         stage('Build') {
