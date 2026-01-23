@@ -1,4 +1,5 @@
 node('rhel') {
+    
     def mvnHome = tool 'maven3'
 
     stage('Checkout') {
