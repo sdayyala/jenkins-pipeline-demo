@@ -1,6 +1,6 @@
 node('rhel') {
 
-    def startTime = System.currentTimeMillis()
+    def startTime = System.currentTimeMillis() #
     def mvnHome = tool 'maven3'
 
     try {
